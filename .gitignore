@@ -27,6 +27,7 @@
 !upf/**
 
 !libs/
-!libs/.gitkeep
+!libs/**
 
-
+!models/
+!models/**
