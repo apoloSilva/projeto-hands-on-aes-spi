@@ -12,7 +12,7 @@
 
 A primeira semana do projeto foi dedicada à apresentação do escopo geral, ao estudo inicial do algoritmo AES e do protocolo SPI, à preparação do ambiente de desenvolvimento e à organização do repositório e do backlog inicial.
 
-O [backlog inicial](../backlog.md) foi criado com base nas principais etapas previstas para as 15 semanas do projeto. A especificação funcional detalhada dos módulos deve orientar as interfaces e a implementação nas etapas seguintes, conforme o material do instrutor [4].
+O [backlog inicial](../backlog.md) foi criado com base nas principais etapas previstas para as 15 semanas do projeto.
 
 ### 1.2. Estudo do AES
 
@@ -32,15 +32,15 @@ O AES efetua o processo de criptografia sobre blocos de 128 bits do `plaintext`,
 
 As etapas representadas na Figura 2 são descritas a seguir:
 
-1. **Organização dos dados e expansão da chave.** Antes da cifragem, o *plaintext* de 128 bits é organizado em uma matriz 4 × 4 de 16 bytes, denominada *State*. Em paralelo, a chave original passa pela expansão de chave (*KeyExpansion*), responsável pela preparação das chaves de rodada (*round keys*). Cada chave de rodada possui 128 bits e pode ser representada como uma matriz 4 × 4 de bytes. São utilizadas 11 chaves de rodada no AES-128, 13 no AES-192 e 15 no AES-256, incluindo a chave aplicada na operação inicial.
+1. **Organização dos dados e expansão da chave:** Antes da cifragem, o *plaintext* de 128 bits é organizado em uma matriz 4 × 4 de 16 bytes, denominada *State*. Em paralelo, a chave original passa pela expansão de chave (*KeyExpansion*), responsável pela preparação das chaves de rodada (*round keys*). Cada chave de rodada possui 128 bits e pode ser representada como uma matriz 4 × 4 de bytes. São utilizadas 11 chaves de rodada no AES-128, 13 no AES-192 e 15 no AES-256, incluindo a chave aplicada na operação inicial.
 
-2. **Operação inicial AddRoundKey.** No início da cifragem, os bytes do *State* são combinados com a primeira chave de rodada por meio de operações XOR. Essa operação antecede as rodadas principais.
+2. **Operação inicial AddRoundKey:** No início da cifragem, os bytes do *State* são combinados com a primeira chave de rodada por meio de operações XOR. Essa operação antecede as rodadas principais.
 
-3. **Execução das rodadas principais.** Após a operação inicial, são executadas repetidamente as transformações *SubBytes*, *ShiftRows*, *MixColumns* e *AddRoundKey*, nessa ordem. Em *SubBytes*, cada byte é substituído por outro valor por meio da tabela S-box. Em *ShiftRows*, as linhas do *State* são deslocadas ciclicamente por diferentes quantidades de posições, alterando a disposição dos bytes; a primeira linha permanece inalterada. Em *MixColumns*, cada coluna passa por uma transformação linear invertível que mistura os seus bytes. Por fim, *AddRoundKey* combina o *State* resultante com a chave correspondente à rodada atual. São executadas 9 rodadas principais no AES-128, 11 no AES-192 e 13 no AES-256.
+3. **Execução das rodadas principais:** Após a operação inicial, são executadas repetidamente as transformações *SubBytes*, *ShiftRows*, *MixColumns* e *AddRoundKey*, nessa ordem. Em *SubBytes*, cada byte é substituído por outro valor por meio da tabela S-box. Em *ShiftRows*, as linhas do *State* são deslocadas ciclicamente por diferentes quantidades de posições, alterando a disposição dos bytes; a primeira linha permanece inalterada. Em *MixColumns*, cada coluna passa por uma transformação linear invertível que mistura os seus bytes. Por fim, *AddRoundKey* combina o *State* resultante com a chave correspondente à rodada atual. São executadas 9 rodadas principais no AES-128, 11 no AES-192 e 13 no AES-256.
 
-4. **Rodada final.** A última rodada executa apenas *SubBytes*, *ShiftRows* e *AddRoundKey*, sem aplicar *MixColumns*.
+4. **Rodada final:** A última rodada executa apenas *SubBytes*, *ShiftRows* e *AddRoundKey*, sem aplicar *MixColumns*.
 
-5. **Formação da saída.** Após a última operação *AddRoundKey*, o *State* final é convertido novamente em um bloco de 128 bits, formando o *ciphertext*, que corresponde ao resultado da cifragem.
+5. **Formação da saída:** Após a última operação *AddRoundKey*, o *State* final é convertido novamente em um bloco de 128 bits, formando o *ciphertext*, que corresponde ao resultado da cifragem.
 
 O estudo tem caráter introdutório e servirá como base para a definição da microarquitetura e a implementação do núcleo AES.
 
@@ -62,7 +62,7 @@ A Figura 3 apresenta uma configuração SPI com quatro sinais: SCLK, CS_N, MOSI 
 
 - MISO (*Main In, Subnode Out*) — linha de dados do periférico para o controlador.
 
-No processo de transmissão, inicialmente, o `main` seleciona o `subnode` com o qual deseja se comunicar por meio da ativação da linha CS, normalmente ativa em nível baixo. O sinal de clock `SCLK` é utilizado para sincronizar o `main` e o `subnode`. Como a comunicação SPI é *full-duplex*, é possível receber e transmitir dados simultaneamente. Além disso, o estado de `SCLK` em repouso (*idle*), quando não há transmissão, é definido pelo valor de `CPOL` (*Clock Polarity*), bit de configuração do SPI. Outro bit de configuração, chamado `CPHA` (*Clock Phase*), determina as bordas do clock utilizadas para amostrar os dados recebidos pela linha `MISO` e atualizar os bits transmitidos pela linha `MOSI`, por meio dos registradores de deslocamento do SPI. Combinados, `CPOL` e `CPHA` definem os quatro modos de operação da interface SPI, apresentados na Tabela 1.
+No processo de transmissão, inicialmente, o `main` seleciona o `subnode` com o qual deseja se comunicar por meio da ativação da linha CS, normalmente ativa em nível baixo. O sinal de clock `SCLK` é utilizado para sincronizar o `main` e o `subnode`. Como a comunicação SPI é *full-duplex*, é possível receber e transmitir dados simultaneamente. Além disso, o estado de `SCLK` em repouso (*idle*), quando não há transmissão, é definido pelo valor de `CPOL` (*Clock Polarity*), bit de configuração do SPI. Outro bit de configuração, chamado `CPHA` (*Clock Phase*), determina as bordas do clock utilizadas para amostrar os dados recebidos pela linha `MOSI` e atualizar os bits transmitidos pela linha `MISO`, por meio dos registradores de deslocamento do SPI. Combinados, `CPOL` e `CPHA` definem os quatro modos de operação da interface SPI, apresentados na Tabela 1.
 
 | Modo SPI | CPOL | CPHA | SCLK em repouso | Amostragem de MOSI | Deslocamento para MISO |
 | --- | --- | --- | --- | --- | --- |
@@ -89,18 +89,16 @@ As quatro interfaces de topo estabelecem a conexão do sistema com o ambiente ex
 
 | Interface de topo | Função na arquitetura-base |
 | --- | --- |
-| GLOBAL RESET | Recebe o reset externo, tratado pelo bloco RESET. |
-| clk from OSC | Recebe o clock externo utilizado pelo modelo do PLL para gerar o clock do sistema. |
-| SPI IF | Permite configuração, controle e leitura de status do sistema. |
-| MEMORY DATA IF | Permite a entrada e a saída dos dados processados pelo AES, por meio do subsistema de dados e da memória. |
+| GLOBAL RESET | reset externo, tratado pelo bloco RESET. |
+| clk from OSC | clock externo utilizado pelo modelo do PLL para gerar o clock do sistema. |
+| SPI IF | interface externa para configuração, controle e leitura de status do sistema. |
+| MEMORY DATA IF | entrada e a saída dos dados processados pelo AES, por meio do subsistema de dados e da memória. |
 
 O SPI opera no domínio SCLK, enquanto o banco de registradores e a interface com o AES operam no domínio do sistema. A estratégia de travessia entre esses domínios e o tratamento dos resets serão detalhados na semana 2. Os modelos comportamentais do PLL e da memória ficam em `models/`, separados do RTL sintetizável [4].
 
 ### 1.5. Preparação do ambiente
 
-O ambiente inicial do projeto foi organizado para permitir a execução do fluxo básico de desenvolvimento RTL. A estrutura inicial do repositório foi preparada para separar os principais arquivos do projeto, incluindo código RTL, testbench e documentação.
-
-A estrutura inicial é apresentada a seguir:
+A estrutura inicial do repositório foi preparada para separar os principais arquivos do projeto, incluindo código RTL, testbench e documentação.
 
 ```text
 .
@@ -188,16 +186,17 @@ Os resultados registrados até o momento são:
 
 - teste mínimo de eco executado em simulação, com 1 teste, 0 erros e `TEST PASSED`.
 
-No teste mínimo, a palavra `8'hD3` é enviada por MOSI, com o bit mais significativo primeiro. Cada bit é capturado na subida de SCLK e devolvido por MISO na descida seguinte. O `response_checker` lê MISO após um atraso de 1 ns e compara a palavra recebida com a enviada. A Figura 5 apresenta as formas de onda do teste mínimo de eco visualizadas no Verdi.
+No teste mínimo, a palavra `8'hD3` é enviada por MOSI, com o bit mais significativo primeiro. Cada bit é capturado na subida de SCLK e devolvido por MISO na descida seguinte. O `response_checker` lê MISO após um atraso de 1 ns e compara a palavra recebida com a enviada. A Figura 5 apresenta o resultado da simulação do teste mínimo de eco (a) e as formas de onda visualizadas no Verdi (b).
 
 ![Formas de onda do teste mínimo de eco no Verdi.](images/semana_01/resultado_verdi.png)
 
-*Figura 5 - Formas de onda do teste mínimo de eco no Verdi.*
+*Figura 5 - Resultados do teste mínimo de eco: (a) saída da simulação no VCS, com 1 teste, 0 erros e `TEST PASSED`; (b) formas de onda de MOSI, MISO e SCLK visualizadas no Verdi.*
+
 
 ## 3. Problemas encontrados
 
 Não foram registrados erros no teste mínimo de eco executado, nem foram encontradas outras dificuldades.
-W
+
 ## 4. Próximos passos
 
 Abaixo temos listado as atividades previstas para a semana 02:
