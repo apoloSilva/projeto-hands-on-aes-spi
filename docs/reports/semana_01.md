@@ -139,7 +139,7 @@ Função proposta para cada módulo RTL:
 - `aes_top.sv`: instancia e interconecta os módulos do sistema;
 - `aes_main.sv`: implementa o núcleo AES e suas transformações;
 - `round_fsm.sv`: controla o sequenciamento das rodadas e funções do AES;
-- `spi_main.sv`: integra os componentes da SPI;
+- `spi_subnode.sv`: integra os componentes da SPI;
 - `spi_base.sv`: controla as operações da SPI;
 - `spi_cdc.sv`: realiza a travessia entre os domínios `SCLK` e `clk_sys`;
 - `reg_bank.sv`: armazena registradores de configuração, controle e status;
