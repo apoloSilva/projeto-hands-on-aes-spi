@@ -10,7 +10,7 @@ module stimulus
     output logic check,
     output logic done
 );
-    localparam logic [REG_DATA_WIDTH-1:0] MOSI_DATA = 8'hD3;
+    localparam logic [SPI_DATA_WIDTH-1:0] MOSI_DATA = 8'hD3;
 
     initial clk_osc = 1'b0;
     always #5 clk_osc = ~clk_osc;
@@ -29,16 +29,16 @@ module stimulus
         // Clocks com CS inativo para liberar o reset sincronizado do SPI.
         repeat (4) begin
             #10;
-            sclk = 1'b1;
+            sclk = 1'b1 & (~cs_n);
             #10;
-            sclk = 1'b0;
+            sclk = 1'b0 & (~cs_n);
         end
 
         #10;
         cs_n = 1'b0;
 
         // Envia a palavra em MOSI, MSB primeiro.
-        for (int i = REG_DATA_WIDTH-1; i >= 0; i--) begin
+        for (int i = SPI_DATA_WIDTH-1; i >= 0; i--) begin
             mosi = MOSI_DATA[i];
             #10;
             sclk = 1'b1;

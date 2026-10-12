@@ -1,7 +1,7 @@
 
 // Teste minimo de ambiente da Semana 1.
 // ATENCAO: Este modulo NÃO implementa AES nem criptografia.
-// Ele somente recebe e devolve de forma serial um bloco de 128 bits para validar
+// Ele somente recebe e devolve de forma serial um bloco de bits para validar
 // o ambiente de compilacão, lint, simulacão, reset e sinais de controle do testbench.
 
 module aes_top
@@ -29,7 +29,7 @@ module aes_top
 );
     logic clk_sys, pll_locked;
     logic rst_sys_n, rst_pll_n, rst_spi_n;
-    logic [REG_DATA_WIDTH-1:0] aes_flags, aes_config, pll_config;
+    logic [SPI_DATA_WIDTH-1:0] aes_flags, aes_config, pll_config;
 
     // Modelo semana 1: apenas repassa o reset global para os outros sinais de reset
     reset_ctrl u_reset_ctrl (
@@ -38,9 +38,8 @@ module aes_top
         .global_rst_n (global_rst_n),
         .pll_locked   (pll_locked),
         .rst_sys_n    (rst_sys_n),
-        .rst_pll_n    (rst_pll_n),
-        .rst_spi_n    (rst_spi_n)
-    );
+        .rst_pll_n    (rst_pll_n)
+		);
 
     // Modelo semana 1: repassa o clock, sem multiplicacão de frequência.
     pll_model u_pll_model (
@@ -52,14 +51,13 @@ module aes_top
     );
 
     // Modelo semana 1: teste de registrador de deslocamento do spi
-    spi_main u_spi_main (
+    spi_subnode u_spi_subnode (
         .pll_locked (pll_locked),
         .sclk       (sclk),
         .cs_n       (cs_n),
         .mosi       (mosi),
         .miso       (miso),
         .clk_sys    (clk_sys),
-        .rst_spi_n  (rst_spi_n),
         .rst_sys_n  (rst_sys_n),
         .aes_flags  (aes_flags),
         .aes_config (aes_config),
@@ -85,3 +83,4 @@ module aes_top
     assign mem_clk   = clk_sys;
     assign mem_rst_n = rst_sys_n;
 endmodule
+

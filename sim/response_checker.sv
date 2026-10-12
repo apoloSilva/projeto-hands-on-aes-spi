@@ -1,4 +1,3 @@
-`timescale 1ns/1ps
 
 module response_checker
     import aes_spi_pkg::*;
@@ -11,9 +10,9 @@ module response_checker
     input logic check,
     input logic done
 );
-    localparam logic [REG_DATA_WIDTH-1:0] EXPECTED_DATA = 8'hD3;
+    localparam logic [SPI_DATA_WIDTH-1:0] EXPECTED_DATA = 8'hD3;
 
-    logic [REG_DATA_WIDTH-1:0] received_miso;
+    logic [SPI_DATA_WIDTH-1:0] received_miso;
     int number_of_bits;
     int number_of_tests = 0;
     int number_of_errors = 0;
@@ -26,7 +25,7 @@ module response_checker
         end
         else if (!cs_n) begin
             #1;
-            received_miso <= {received_miso[REG_DATA_WIDTH-2:0], miso};
+            received_miso <= {received_miso[SPI_DATA_WIDTH-2:0], miso};
             number_of_bits <= number_of_bits + 1;
         end
     end
@@ -35,7 +34,7 @@ module response_checker
         number_of_tests++;
 
         if (received_miso !== EXPECTED_DATA ||
-            number_of_bits != REG_DATA_WIDTH) begin
+            number_of_bits != SPI_DATA_WIDTH) begin
             number_of_errors++;
             $display("ERROR: MISO=%h expected=%h | bits=%0d",
                      received_miso, EXPECTED_DATA, number_of_bits);

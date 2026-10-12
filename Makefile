@@ -13,7 +13,7 @@ FORMAL_DIR := fm
 RTL_FILES := \
     $(RTL_DIR)/aes_spi_pkg.sv \
     $(RTL_DIR)/reset_ctrl.sv $(RTL_DIR)/power_ctrl.sv \
-    $(RTL_DIR)/spi/reg_bank.sv $(RTL_DIR)/spi/spi_fsm.sv  $(RTL_DIR)/spi/spi_cdc.sv $(RTL_DIR)/spi/spi_main.sv \
+    $(RTL_DIR)/spi/reg_bank.sv $(RTL_DIR)/spi/spi_base.sv  $(RTL_DIR)/spi/spi_cdc.sv $(RTL_DIR)/spi/spi_subnode.sv \
     $(RTL_DIR)/aes/round_fsm.sv $(RTL_DIR)/aes/aes_main.sv \
     $(RTL_DIR)/aes_top.sv
 
