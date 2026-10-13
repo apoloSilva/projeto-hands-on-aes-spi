@@ -1,10 +1,10 @@
-# Projeto Hands-on - RTL Design Track
+# Projeto Hands-on - RTL Synthesis Track
 
 ## Relatório da Semana 1: Kick-off, estudo e ambiente
 
 **Autor:** Apolo de Lima Silva  
 
-**Status da semana:** aguardando avaliação do instrutor.
+**Status da semana:** Concluído — aprovada pelo instrutor
 
 ## 1. Atividades realizadas
 

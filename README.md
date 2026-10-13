@@ -1,6 +1,6 @@
 # AES Hands-on
 
-Projeto da trilha de RTL Design para desenvolver um acelerador AES com
+Projeto da trilha de RTL Synthesis para desenvolver um acelerador AES com
 interface SPI, interface de memória e técnicas de baixo consumo.
 
 ## Semana 1
