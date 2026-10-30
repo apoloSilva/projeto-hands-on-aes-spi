@@ -4,18 +4,6 @@
 
 As interfaces externas (`RESET`, `CLK`, `SPI IF` e `MEMORY DATA IF`) e as conexões internas são representadas no diagrama de [microarquitetura_v1.0.md](../architecture/microarquitetura_v1.0.md).
 
-| Fronteira | Papel | Sinais |
-|---|---|---|
-| Exterior ↔ SPI | `SPI IF`: receber comandos e devolver respostas | `spi_sclk`, `spi_cs_n`, `spi_mosi` e `spi_miso` |
-| Exterior → módulos | `RESET`: inicializar a lógica de controle | `rst_n` |
-| Exterior → PLL/SPI | `CLK`: fornecer referência de clock | `clk` |
-| Exterior ↔ memória | `MEMORY DATA IF`: possibilitar acesso à memória de dados | `mem_clk`, `mem_i_data`, `mem_i_wr_en`, `mem_i_addr` e `mem_o_data` |
-| SPI ↔ AES | Configuração, comandos e indicação de estado | `cfg_key`, `cfg_iv`, `cfg_counter`, `num_blocks`, `aes_control` e `aes_status` |
-| SPI ↔ PLL | Configuração e indicação de estabilidade | `system_control` e `pll_locked` |
-| AES ↔ memória | Leitura dos dados de entrada e escrita dos resultados | `aes_mem_we`, `aes_mem_addr`, `aes_mem_wdata` e `aes_mem_rdata` |
-| Topo → memória | Seleção do proprietário e multiplexação dos sinais de acesso | `mem_sel_aes`, `mem_mux_clk`, `mem_mux_we`, `mem_mux_addr`, `mem_mux_wdata` e `mem_mux_rdata` |
-| PLL/topo → módulos | Fornecer clock e reset aos domínios correspondentes | `clk_sys` e `rst_sys_n` |
-
 A memória de dados é compartilhada entre o AES e a interface externa, com acesso exclusivo selecionado por `MEM_SEL_AES` (`system_control[0]`). O sequenciamento do reset é realizado diretamente no topo, sem módulo dedicado.
 
 As interfaces externas seguem a especificação em [DV_BlockGuide_MiniSoCAES_v1.0.0](../../docs/spec/DV_BlockGuide_MiniSoCAES_v1.0.0.pdf).
@@ -47,7 +35,7 @@ Os bytes das quatro linhas são reordenados simultaneamente por lógica combinac
 
 ## 5. Testbench autoverificável
 
-O testbench autoverificável compara os resultados de SubBytes e ShiftRows com os estados intermediários do exemplo de cifragem do Apêndice B da FIPS 197 [1]. Os módulos são encadeados na ordem SubBytes → ShiftRows para `sel_mode = 0` e InvShiftRows → InvSubBytes para `sel_mode = 1`.
+O testbench autoverificável compara os resultados de [`minisoc_aes_sub_bytes.sv`](../../rtl/minisoc_aes/minisoc_aes_sub_bytes.sv) e [`minisoc_aes_shift_rows.sv`](../../rtl/minisoc_aes/minisoc_aes_shift_rows.sv) com os estados intermediários do exemplo de cifragem do Apêndice B da FIPS 197 [1]. Os módulos são encadeados na ordem SubBytes → ShiftRows para `sel_mode = 0` e InvShiftRows → InvSubBytes para `sel_mode = 1`.
 
 A `task automatic check_round` recebe os valores *Start of Round*, *After SubBytes* e *After ShiftRows*, verifica as transformações diretas e inversas e interrompe a simulação com `$fatal` caso encontre divergências. Os testes foram executados nas dez rodadas, com resultado `PASS` em cada uma.
 
