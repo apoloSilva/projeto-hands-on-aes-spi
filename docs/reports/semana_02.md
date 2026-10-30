@@ -2,7 +2,7 @@
 
 ## 1. Diagrama e interface: Interfaces de topo e entre módulos
 
-As interfaces externas (`RESET`, `CLK`, `SPI IF` e `MEMORY DATA IF`) e as conexões internas são representadas no diagrama de [arquitetura_v1.0.md](arquitetura_v1.0.md).
+As interfaces externas (`RESET`, `CLK`, `SPI IF` e `MEMORY DATA IF`) e as conexões internas são representadas no diagrama de [microarquitetura_v1.0.md](../architecture/microarquitetura_v1.0.md).
 
 | Fronteira | Papel | Sinais |
 |---|---|---|
@@ -18,7 +18,7 @@ As interfaces externas (`RESET`, `CLK`, `SPI IF` e `MEMORY DATA IF`) e as conex�
 
 A memória de dados é compartilhada entre o AES e a interface externa, com acesso exclusivo selecionado por `MEM_SEL_AES` (`system_control[0]`). O sequenciamento do reset é realizado diretamente no topo, sem módulo dedicado.
 
-As interfaces externas seguem a especificação **MiniSoC AES Top-Level System**.
+As interfaces externas seguem a especificação em [DV_BlockGuide_MiniSoCAES_v1.0.0](../../docs/spec/DV_BlockGuide_MiniSoCAES_v1.0.0.pdf).
 
 ## 2. State matrix 4x4
 
@@ -51,23 +51,24 @@ O testbench autoverificável compara os resultados de SubBytes e ShiftRows com o
 
 A `task automatic check_round` recebe os valores *Start of Round*, *After SubBytes* e *After ShiftRows*, verifica as transformações diretas e inversas e interrompe a simulação com `$fatal` caso encontre divergências. Os testes foram executados nas dez rodadas, com resultado `PASS` em cada uma.
 
-![Resultado dos testes no terminal](imagens/testbench_rounds.png)
+![Resultado dos testes no terminal](images/testbench_rounds.png)
 
 *Figura 1 — Resultado do testbench autoverificável.*
- 
 
 ## 6. Lista de dúvidas
 
-
 - **5.3 Clock-domain crossing:** O banco de registradro é atualizado pelo clock always-on, clk (diferentes do clcok do sistema sys)?
 
-- **A lógica implementada em `minisoc_aes_sub_bytes.sv` e `minisoc_aes_shift_rows.sv` deve ser estritamente combinacional ou poderá ser sequencial ?
+- **A lógica implementada em `minisoc_aes_sub_bytes.sv` e `minisoc_aes_shift_rows.sv` deve ser estritamente combinacional ou poderá ser sequencial ?**
 
 O tamanho da chave influencia o número de chaves de rodada geradas e a quantidade de rodadas do AES. Embora a especificação atual contemple apenas AES-128, seria possível implementar uma configuração dinâmica do tamanho da chave, utilizando um campo adicional no registrador `AES_CONTROL`?
 
 - **Clock do módulo SPI:** Segundo a especificação, o SPI deve operar no domínio *always-on*, utilizando o clock de referência `clk`, independentemente da PLL ?
 
-
 ## Referências
 
 1. **NIST.** *Advanced Encryption Standard (AES).* FIPS 197. Washington, D.C., 2001. Atualizado em 9 maio 2023. DOI: [10.6028/NIST.FIPS.197-upd1](https://doi.org/10.6028/NIST.FIPS.197-upd1). Acesso em: 7 out. 2026.
+
+
+
+

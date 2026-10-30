@@ -33,7 +33,7 @@ Planejamento atualizado conforme o cronograma revisado em 27/10/2026 e o *Block 
 
 **Opcional:** implementar e testar InvSubBytes e InvShiftRows como transformações inversas. Isso não substitui os critérios obrigatórios acima.
 
-## Cronograma e entregas - Semanas 2 a 13
+## Cronograma e entregas - Semanas 3 a 13
 
 | Semana / entrega | Atividades e entregável | Critério de conclusão | Estado |
 | --- | --- | --- | --- |

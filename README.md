@@ -9,7 +9,7 @@ interface SPI, memória compartilhada e técnicas de baixo consumo.
 
 
 A arquitetura, a nomenclatura, as interfaces e o mapa de registradores seguem o
-[DV_BlockGuide_MiniSoCAES_v1.0.0](docs/DV_BlockGuide_MiniSoCAES_v1.0.0.pdf).
+[DV_BlockGuide_MiniSoCAES_v1.0.0](docs/spec/DV_BlockGuide_MiniSoCAES_v1.0.0.pdf).
 
 ## Semana 2
 
@@ -52,7 +52,7 @@ make clean    # Limpeza dos arquivos gerados
 ## Documentação
 
 
-- [Especificação DV_BlockGuide_MiniSoCAES_v1.0.0](docs/DV_BlockGuide_MiniSoCAES_v1.0.0.pdf)
+- [Especificação DV_BlockGuide_MiniSoCAES_v1.0.0](docs/spec/DV_BlockGuide_MiniSoCAES_v1.0.0.pdf)
 - [Backlog](docs/backlog.md)
 - [Relatório da semana 1](docs/reports/semana_01.md)
 - [Relatório da semana 2](docs/reports/semana_02.md)
