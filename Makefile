@@ -3,7 +3,6 @@
 # ==========================================
 RTL_DIR    := rtl
 TB_DIR     := sim
-MODEL_DIR  := models
 SYNTH_DIR  := synth
 FORMAL_DIR := fm
 
@@ -11,21 +10,21 @@ FORMAL_DIR := fm
 # Arquivos
 # ==========================================
 RTL_FILES := \
-    $(RTL_DIR)/aes_spi_pkg.sv \
-    $(RTL_DIR)/reset_ctrl.sv $(RTL_DIR)/power_ctrl.sv \
-    $(RTL_DIR)/spi/reg_bank.sv $(RTL_DIR)/spi/spi_base.sv  $(RTL_DIR)/spi/spi_cdc.sv $(RTL_DIR)/spi/spi_subnode.sv \
-    $(RTL_DIR)/aes/round_fsm.sv $(RTL_DIR)/aes/aes_main.sv \
-    $(RTL_DIR)/aes_top.sv
+    $(RTL_DIR)/minisoc_pkg.sv \
+    $(RTL_DIR)/minisoc_mem/minisoc_memory.sv $(RTL_DIR)/minisoc_pll/minisoc_pll_mock.sv \
+    $(RTL_DIR)/minisoc_spi/minisoc_spi.sv \
+    $(RTL_DIR)/minisoc_aes/minisoc_aes_sbox.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_sub_bytes.sv \
+    $(RTL_DIR)/minisoc_aes/minisoc_aes_shift_rows.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_key_exp.sv \
+    $(RTL_DIR)/minisoc_aes/minisoc_aes_dp.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_top.sv \
+    $(RTL_DIR)/minisoc_top.sv
 
-MODEL_FILES := $(MODEL_DIR)/pll_model.sv $(MODEL_DIR)/memory_model.sv
-
-TB_FILES := $(TB_DIR)/response_checker.sv $(TB_DIR)/stimulus.sv $(TB_DIR)/testbench.sv
+TB_FILES := $(TB_DIR)/semana02_test_vectors_pkg.sv $(TB_DIR)/minisoc_top_tb.sv
 
 # ==========================================
 # Módulos de topo
 # ==========================================
-RTL_TOP := aes_top
-TB_TOP  := testbench
+RTL_TOP := minisoc_top
+TB_TOP  := minisoc_top_tb
 
 # Arquivo de formas de onda gerado pelo testbench
 WAVE_FILE := waves.fsdb

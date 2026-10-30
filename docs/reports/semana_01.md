@@ -18,7 +18,7 @@ O [backlog inicial](../backlog.md) foi criado com base nas principais etapas pre
 
 O Advanced Encryption Standard (AES) é um algoritmo de criptografia simétrica padronizado pelo `National Institute of Standards and Technology` (NIST), agência do Departamento de Comércio dos Estados Unidos [1]. Podendo ser implementado tanto em software quanto em hardware, de forma geral, o AES recebe um bloco de dados e uma chave criptográfica (`key`) e gera uma saída cifrada (`encrypted`) ou decifrada (`decrypted`). No processo de cifragem, um bloco de dados em claro (`plaintext`) é transformado em um bloco de dados cifrados (`ciphertext`); no processo de decifragem, é realizada a transformação inversa (Figura 1).
 
-![Operação geral do AES.](images/semana_01/ads1.png)
+![Operação geral do AES.](images/ads1.png)
 
 *Figura 1 - Operação geral do AES.*
 
@@ -26,7 +26,7 @@ Com foco no processo de cifragem, o estudo e a presente descrição do AES foram
 
 O AES efetua o processo de criptografia sobre blocos de 128 bits do `plaintext`, utilizando uma `key` com tamanho de 128 bits, 192 bits ou 256 bits e funções para confusão e difusão do `State`. O tamanho da chave define o processo de expansão e a quantidade de rodadas de criptografia que serão aplicadas. O processo segue o diagrama apresentado na Figura 2.
 
-![Fluxo do processo de cifragem do AES.](images/semana_01/fluxo_aes.png)
+![Fluxo do processo de cifragem do AES.](images/fluxo_aes.png)
 
 *Figura 2 - Fluxo do processo de cifragem do AES.*
 
@@ -46,7 +46,7 @@ O SPI (*Serial Peripheral Interface*) é uma interface serial síncrona de comun
 
 A Figura 3 apresenta uma configuração SPI com quatro sinais: SCLK, CS_N, MOSI e MISO.
 
-![Configuração básica SPI com controlador e periférico.](images/semana_01/spi_config.png)
+![Configuração básica SPI com controlador e periférico.](images/spi_config.png)
 
 *Figura 3 - Configuração básica SPI. Fonte: Dhaker (2018) [2].*
 
@@ -69,7 +69,7 @@ No processo de transmissão, inicialmente, o `main` seleciona o `subnode` com o 
 
 A Figura 4 apresenta um exemplo do formato de onda das quatro linhas SPI para o modo 1 da Tabela 1. Nesse modo, o sinal `SCLK` permanece em nível baixo durante o repouso. O início e o fim da transmissão são determinados pelas transições de nível alto para baixo e de baixo para alto do sinal CS, respectivamente, indicadas pelas linhas verdes tracejadas. Durante a transmissão, os dados nas linhas `MOSI` e `MISO` são deslocados na borda de subida do clock (linhas azuis) e amostrados na borda de descida (linhas laranjas).
 
-![SPI modo 1, com CPOL igual a zero e CPHA igual a um.](images/semana_01/spi_mode_1_cpol_0_cpha_1.png)
+![SPI modo 1, com CPOL igual a zero e CPHA igual a um.](images/spi_mode_1_cpol_0_cpha_1.png)
 
 *Figura 4 - SPI modo 1: CPOL = 0 e CPHA = 1. Fonte: Dhaker (2018) [2].*
 
@@ -105,11 +105,10 @@ A estrutura inicial do repositório foi preparada para separar os principais arq
 │   ├── reports/
 │   │   ├── semana_01.md
 │   │   └── images/
-│   │       └── semana_01/
 │   └── backlog.md
 ├── rtl/
 │   ├── aes/
-│   │   ├── aes_main.sv
+│   │   ├── aes_core.sv
 │   │   └── round_fsm.sv
 │   ├── spi/
 │   │   ├── spi_subnode.sv
@@ -137,7 +136,7 @@ Função proposta para cada módulo RTL:
 
 - `aes_spi_pkg.sv`: define os parâmetros compartilhados;
 - `aes_top.sv`: instancia e interconecta os módulos do sistema;
-- `aes_main.sv`: implementa o núcleo AES e suas transformações;
+- `aes_core.sv`: implementa o núcleo AES e suas transformações;
 - `round_fsm.sv`: controla o sequenciamento das rodadas e funções do AES;
 - `spi_subnode.sv`: integra os componentes da SPI;
 - `spi_base.sv`: controla as operações da SPI;
@@ -166,7 +165,7 @@ Os resultados registrados até o momento são:
 
 No teste mínimo, a palavra `8'hD3` é enviada por MOSI, com o bit mais significativo primeiro. Cada bit é capturado na subida de SCLK e devolvido por MISO na descida seguinte. O `response_checker` lê MISO após um atraso de 1 ns e compara a palavra recebida com a enviada. A Figura 5 apresenta o resultado da simulação do teste mínimo de eco (a) e as formas de onda visualizadas no Verdi (b).
 
-![Formas de onda do teste mínimo de eco no Verdi.](images/semana_01/resultado_verdi.png)
+![Formas de onda do teste mínimo de eco no Verdi.](images/resultado_verdi.png)
 
 *Figura 5 - Resultados do teste mínimo de eco: (a) saída da simulação no VCS, com 1 teste, 0 erros e `TEST PASSED`; (b) formas de onda de MOSI, MISO e SCLK visualizadas no Verdi.*
 
