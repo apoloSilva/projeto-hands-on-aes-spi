@@ -55,15 +55,19 @@ A `task automatic check_round` recebe os valores *Start of Round*, *After SubByt
 
 *Figura 1 — Resultado do testbench autoverificável.*
 
+
 ## 6. Lista de dúvidas
 
-- **5.3 Clock-domain crossing:** O banco de registradro é atualizado pelo clock always-on, clk (diferentes do clcok do sistema sys)?
+1. **Clock do módulo SPI:** Segundo a especificação, o módulo SPI deve operar no domínio *always-on*, utilizando o clock de referência `clk`, independentemente do PLL? O módulo `minisoc_pll_mock.sv` deve permanecer como modelo RTL para simulação ou está prevista sua substituição por uma macro de PLL (*Hard IP*) ?
 
-- **A lógica implementada em `minisoc_aes_sub_bytes.sv` e `minisoc_aes_shift_rows.sv` deve ser estritamente combinacional ou poderá ser sequencial ?**
+2. **Clock-domain crossing (Seção 5.3):** O banco de registradores SPI é atualizado pelo clock *always-on* (`clk`), enquanto o AES utiliza o clock de sistema (`sys_clk`)?
 
-O tamanho da chave influencia o número de chaves de rodada geradas e a quantidade de rodadas do AES. Embora a especificação atual contemple apenas AES-128, seria possível implementar uma configuração dinâmica do tamanho da chave, utilizando um campo adicional no registrador `AES_CONTROL`?
+3. **Implementação combinacional ou sequencial:** A lógica implementada em `minisoc_aes_sub_bytes.sv` e `minisoc_aes_shift_rows.sv` deve ser estritamente combinacional ou pode ser sequencial?
 
-- **Clock do módulo SPI:** Segundo a especificação, o SPI deve operar no domínio *always-on*, utilizando o clock de referência `clk`, independentemente da PLL ?
+4. **Configuração do tamanho da chave AES:** Seria possível implementar uma configuração dinâmica do tamanho da chave utilizando bits reservados do registrador `AES_CONTROL`?
+
+5. **Conformidade da microarquitetura:** As interfaces e conexões apresentadas em [microarquitetura_v1.0.md](../architecture/microarquitetura_v1.0.md) estão de acordo com o *Block Guide v1.0.0* ou apresentam algum desvio em relação à especificação?
+
 
 ## Referências
 

@@ -12,8 +12,8 @@ module minisoc_top_tb;
     minisoc_aes_shift_rows u_shift_rows (.sel_mode(sel_mode),.state_in(shift_in),.state_out(shift_out));
 
     // Seleciona o encadeamento das transformações.
-    assign sub_in   = sel_mode ? shift_out : state_in;
-    assign shift_in = sel_mode ? state_in  : sub_out;
+    assign sub_in   = sel_mode ? shift_out : state_in; // o vetor state_in é definido em cada task, 
+    assign shift_in = sel_mode ? state_in  : sub_out; // de acordo com o tipo de operação
 
     // Execução dos testes.
     initial begin
@@ -42,7 +42,7 @@ module minisoc_top_tb;
         check_inv_cypher_round(7, state_start_of_round_1, after_subbytes_of_round_1, after_shiftrows_of_round_1);
         check_inv_cypher_round(8, state_start_of_round_1, after_subbytes_of_round_1, after_shiftrows_of_round_1);
         check_inv_cypher_round(9, state_start_of_round_1, after_subbytes_of_round_1, after_shiftrows_of_round_1);
-
+        check_inv_cypher_round(10, state_start_of_round_1, after_subbytes_of_round_1, after_shiftrows_of_round_1);
         $display("\n");
 
         $finish;
@@ -59,7 +59,7 @@ module minisoc_top_tb;
         state_in = state_start;
         #1;
 
-        if (sub_out !== expected_sub)
+        if (sub_out !== expected_sub)// intermediário
             $fatal(1, "FAIL SubBytes Round %0d", round_num);
 
         if (shift_out !== expected_shift)
@@ -78,7 +78,7 @@ module minisoc_top_tb;
         state_in = expected_shift;
         #1;
 
-        if (shift_out !== expected_sub)
+        if (shift_out !== expected_sub)// intermediário
             $fatal(1, "FAIL InvShiftRows Round %0d", round_num);
 
         if (sub_out !== state_start)

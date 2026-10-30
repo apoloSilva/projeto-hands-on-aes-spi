@@ -3,7 +3,7 @@ module minisoc_spi
     import minisoc_pkg::*;
 (
     // Clock, reset e estado da PLL
-    input  logic         clk,
+    input  logic         clk_ref,
     input  logic         rst_n,
     input  logic         o_locked,
 

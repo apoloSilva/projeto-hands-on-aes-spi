@@ -4,7 +4,7 @@
 ## Diagrama geral
 
 
-![Esboço da arquitetura geral do MiniSoC AES](arquitetura_geral.png)
+![Esboço da arquitetura geral do MiniSoC AES](microarquitetura_v1.0.png)
 
 
 *Figura 1 — Esboço da arquitetura geral e das ligações entre os blocos. Fonte: elaboração própria.*

@@ -78,7 +78,7 @@ module minisoc_top
     // SPI e banco de registradores
     minisoc_spi u_minisoc_spi (
         // Clock, reset e estado da PLL
-        .clk            (clk),     // clock always-on
+        .clk_ref        (clk),     // clock always-on
         .rst_n          (rst_n),   // reset global
         .o_locked       (o_locked),
         // Interface: SPI IF
