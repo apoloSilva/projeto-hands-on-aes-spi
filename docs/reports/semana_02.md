@@ -29,9 +29,9 @@ Os 16 bytes do State são processados em paralelo, por lógica puramente combina
 
 ## 4. Implementação de `minisoc_aes_shift_rows`
 
-O módulo `minisoc_aes_shift_rows` realiza as operações ShiftRows e InvShiftRows por meio do deslocamento circular dos bytes das linhas do State, conforme as Seções 5.1.2 e 5.3.1 da FIPS 197, respectivamente [1]. A organização dos 16 bytes na matriz AES é apresentada na Tabela 1.
+O módulo `minisoc_aes_shift_rows` realiza as operações ShiftRows e InvShiftRows por meio do deslocamento circular dos bytes das linhas do State, conforme as Seções 5.1.2 e 5.3.1 da FIPS 197, respectivamente [1].
 
-Os bytes das quatro linhas são reordenados simultaneamente por lógica combinacional. O sinal `sel_mode` seleciona ShiftRows (0), com deslocamentos circulares à esquerda, ou InvShiftRows (1), com deslocamentos à direita. A primeira linha permanece inalterada, enquanto as demais são deslocadas em uma, duas ou três posições, respectivamente. O resultado é disponibilizado em `state_out`, sem depender de ciclos de clock.
+Os bytes das quatro linhas são reordenados simultaneamente por lógica combinacional. O sinal `sel_mode` seleciona ShiftRows (0), com deslocamentos circulares à esquerda, ou InvShiftRows (1), com deslocamentos à direita. A primeira linha permanece inalterada, enquanto as demais são deslocadas em uma, duas ou três posições, respectivamente. O resultado é disponibilizado em `state_out`.
 
 ## 5. Testbench autoverificável
 
