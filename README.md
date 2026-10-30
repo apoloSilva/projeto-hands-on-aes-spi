@@ -44,7 +44,6 @@ da etapa estão descritas no [relatório da semana 2](docs/reports/semana_02.md)
 make syntax   # Análise dos arquivos SystemVerilog
 make compile  # Compilação e elaboração
 make run      # Execução da simulação
-make wave     # Visualização no Verdi
 make clean    # Limpeza dos arquivos gerados
 ```
 

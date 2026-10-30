@@ -36,8 +36,7 @@ Os bytes das quatro linhas são reordenados simultaneamente por lógica combinac
 ## 5. Testbench autoverificável
 
 O testbench autoverificável compara os resultados de [`minisoc_aes_sub_bytes.sv`](../../rtl/minisoc_aes/minisoc_aes_sub_bytes.sv) e [`minisoc_aes_shift_rows.sv`](../../rtl/minisoc_aes/minisoc_aes_shift_rows.sv) com os estados intermediários do exemplo de cifragem do Apêndice B da FIPS 197 [1]. Os módulos são encadeados na ordem SubBytes → ShiftRows para `sel_mode = 0` e InvShiftRows → InvSubBytes para `sel_mode = 1`.
-
-A `task automatic check_round` recebe os valores *Start of Round*, *After SubBytes* e *After ShiftRows*, verifica as transformações diretas e inversas e interrompe a simulação com `$fatal` caso encontre divergências. Os testes foram executados nas dez rodadas, com resultado `PASS` em cada uma.
+Os testes foram executados nas dez rodadas, com resultado `PASS` em cada uma.
 
 ![Resultado dos testes no terminal](images/testbench_rounds.png)
 
@@ -48,13 +47,12 @@ A `task automatic check_round` recebe os valores *Start of Round*, *After SubByt
 
 1. **Clock do módulo SPI:** Segundo a especificação, o módulo SPI deve operar no domínio *always-on*, utilizando o clock de referência `clk`, independentemente do PLL? O módulo `minisoc_pll_mock.sv` deve permanecer como modelo RTL para simulação ou está prevista sua substituição por uma macro de PLL (*Hard IP*) ?
 
-2. **Clock-domain crossing (Seção 5.3):** O banco de registradores SPI é atualizado pelo clock *always-on* (`clk`), enquanto o AES utiliza o clock de sistema (`sys_clk`)?
+2. **Clock-domain crossing :** O banco de registradores SPI é atualizado pelo clock *always-on* (`clk`), enquanto o AES utiliza o clock de sistema (`sys_clk`)?
 
 3. **Implementação combinacional ou sequencial:** A lógica implementada em `minisoc_aes_sub_bytes.sv` e `minisoc_aes_shift_rows.sv` deve ser estritamente combinacional ou pode ser sequencial?
 
 4. **Configuração do tamanho da chave AES:** Seria possível implementar uma configuração dinâmica do tamanho da chave utilizando bits reservados do registrador `AES_CONTROL`?
 
-5. **Conformidade da microarquitetura:** As interfaces e conexões apresentadas em [microarquitetura_v1.0.md](../architecture/microarquitetura_v1.0.md) estão de acordo com o *Block Guide v1.0.0* ou apresentam algum desvio em relação à especificação?
 
 
 ## Referências
