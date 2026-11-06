@@ -22,9 +22,9 @@ module minisoc_top
 );
 
     // Clock e reset internos
+    logic [RESET_RELEASE_CYCLES-1:0] rst_sync;
     logic sys_clk, o_locked;
     logic rst_sys_n, rst_release_n;
-    logic [1:0] rst_sync;
 
     // Registradores de configuração e estado
     logic [127:0] cfg_key, cfg_iv;
@@ -44,15 +44,6 @@ module minisoc_top
     logic [MEM_ADDR_WIDTH-1:0] mem_mux_addr;
     logic [MEM_DATA_WIDTH-1:0] mem_mux_wdata, mem_mux_rdata;
 
-    assign mem_sel_aes   = system_control[0];
-    assign mem_mux_clk   = mem_sel_aes ? sys_clk       : mem_clk;
-    assign mem_mux_we    = mem_sel_aes ? aes_mem_we    : mem_i_wr_en;
-    assign mem_mux_addr  = mem_sel_aes ? aes_mem_addr  : mem_i_addr;
-    assign mem_mux_wdata = mem_sel_aes ? aes_mem_wdata : mem_i_data;
-
-    assign aes_mem_rdata = mem_mux_rdata; // disponível tanto para o aes
-    assign mem_o_data    = mem_mux_rdata; // quanto para MEMORY DATA 
-
     // 4.2 Sequência de reset interno
     assign rst_release_n = rst_n & o_locked;
 
@@ -60,10 +51,10 @@ module minisoc_top
         if (!rst_release_n)
             rst_sync <= '0;
         else
-            rst_sync <= {rst_sync[0], 1'b1};
+            rst_sync <= (rst_sync << 1) | 1'b1; // insere e desloca 1 a esquera a cada ciclo de sys_clk
     end
 
-    assign rst_sys_n = rst_sync[1];
+    assign rst_sys_n = rst_sync[RESET_RELEASE_CYCLES-1]; // 
 
     // PLL
     minisoc_pll_mock u_minisoc_pll_mock (

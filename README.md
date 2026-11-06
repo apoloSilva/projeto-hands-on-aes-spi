@@ -1,7 +1,7 @@
 # MiniSoC AES — Hands-on
 
 
-Projeto da trilha de RTL Synthesis para desenvolver um acelerador AES-128 com
+Projeto da trilha de RTL Design para desenvolver um acelerador AES-128 com
 interface SPI, memória compartilhada e técnicas de baixo consumo.
 
 
@@ -22,6 +22,19 @@ InvSubBytes e InvShiftRows do AES.
 O planejamento das tarefas está no [backlog](docs/backlog.md), e as atividades
 da etapa estão descritas no [relatório da semana 2](docs/reports/semana_02.md).
 
+## Semana 3
+
+Esta etapa define a microarquitetura e as interfaces entre os módulos do AES,
+incluindo a FSM, o datapath e a sequência de reset. As transformações de rodada
+incluem MixColumns, InvMixColumns e AddRoundKey, além das transformações diretas
+e inversas da Semana 2. O testbench compara os resultados com os
+estados intermediários da FIPS 197.
+
+`minisoc_aes_key_exp` e `minisoc_aes_dp` ainda são rascunhos; sua implementação
+está prevista para a Semana 4. A integração da memória, do SPI e do topo geral
+ocorre nas semanas seguintes.
+
+
 
 ## Organização
 
@@ -37,7 +50,7 @@ da etapa estão descritas no [relatório da semana 2](docs/reports/semana_02.md)
 | `libs/` | Bibliotecas, reservada. |
 
 
-## Executar teste da semana 02
+## Executar testes das transformações
 
 
 ```bash
@@ -55,6 +68,8 @@ make clean    # Limpeza dos arquivos gerados
 - [Backlog](docs/backlog.md)
 - [Relatório da semana 1](docs/reports/semana_01.md)
 - [Relatório da semana 2](docs/reports/semana_02.md)
+- [Microarquitetura v1.0](docs/architecture/microarquitetura_v1.0.md)
+- [Relatório da semana 3](docs/reports/semana_03.md)
 
 
 

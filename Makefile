@@ -15,8 +15,8 @@ RTL_FILES := \
     $(RTL_DIR)/minisoc_spi/minisoc_spi.sv \
     $(RTL_DIR)/minisoc_aes/minisoc_aes_sbox.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_sub_bytes.sv \
     $(RTL_DIR)/minisoc_aes/minisoc_aes_shift_rows.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_key_exp.sv \
-    $(RTL_DIR)/minisoc_aes/minisoc_aes_dp.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_top.sv \
-    $(RTL_DIR)/minisoc_top.sv
+    $(RTL_DIR)/minisoc_aes/minisoc_aes_mix_columns.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_add_round_key.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_dp.sv \
+    $(RTL_DIR)/minisoc_aes/minisoc_aes_top.sv $(RTL_DIR)/minisoc_top.sv
 
 TB_FILES := $(TB_DIR)/semana02_test_vectors_pkg.sv $(TB_DIR)/minisoc_top_tb.sv
 

@@ -13,8 +13,8 @@ module minisoc_aes_sub_bytes (
     for (genvar i = 0; i < 16; i++) begin : gen_sub_bytes
 
         minisoc_aes_sbox u_minisoc_aes_sbox (
-            .byte_in  (state_in [127 - 8*i -: 8]),
-            .byte_out (state_out[127 - 8*i -: 8]),
+            .byte_in  (state_in [127 - 8*i -: 8]), // atribuí os bytes de i = 0 (127:120) até i = 15 (7:0)
+            .byte_out (state_out[127 - 8*i -: 8]), // para cada S-Box
             .sel_mode (sel_mode)
         );
 
