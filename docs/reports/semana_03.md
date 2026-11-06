@@ -157,39 +157,19 @@ O módulo [`minisoc_aes_mix_columns.sv`](../../rtl/minisoc_aes/minisoc_aes_mix_c
 
 Para cada coluna \(c\), MixColumns é definido pela Equação (5.7):
 
-$$
-\begin{bmatrix}
-s'_{0,c}\\ s'_{1,c}\\ s'_{2,c}\\ s'_{3,c}
-\end{bmatrix}
-=
-\begin{bmatrix}
-02 & 03 & 01 & 01\\
-01 & 02 & 03 & 01\\
-01 & 01 & 02 & 03\\
-03 & 01 & 01 & 02
-\end{bmatrix}
-\begin{bmatrix}
-s_{0,c}\\ s_{1,c}\\ s_{2,c}\\ s_{3,c}
-\end{bmatrix}.
-$$
+$Para cada coluna c, MixColumns é definido pela Equação (5.7):
+
+<p align="center">
+  <img src="images/eq_5_7.png" alt="Equação do MixColumns" width="420">
+</p>
 
 InvMixColumns é definido pela Equação (5.14):
 
-$$
-\begin{bmatrix}
-s'_{0,c}\\ s'_{1,c}\\ s'_{2,c}\\ s'_{3,c}
-\end{bmatrix}
-=
-\begin{bmatrix}
-0e & 0b & 0d & 09\\
-09 & 0e & 0b & 0d\\
-0d & 09 & 0e & 0b\\
-0b & 0d & 09 & 0e
-\end{bmatrix}
-\begin{bmatrix}
-s_{0,c}\\ s_{1,c}\\ s_{2,c}\\ s_{3,c}
-\end{bmatrix}.
-$$
+<p align="center">
+  <img src="images/eq_5_14.png" alt="Equação do InvMixColumns" width="420">
+</p>
+
+
 
 Os quatro bytes de cada coluna são combinados por lógica combinacional. O sinal `sel_mode` seleciona MixColumns (`0`), com coeficientes `{02, 03, 01, 01}`, ou InvMixColumns (`1`), com coeficientes `{0e, 0b, 0d, 09}` na primeira linha de suas respectivas matrizes. O resultado é disponibilizado em `state_out`.
 
