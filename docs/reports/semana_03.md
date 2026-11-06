@@ -91,7 +91,7 @@ mem_i_data (0) -------->|                       |----> mem_mux_wdata
 
 Os índices (0) e (1) identificam os sinais selecionados por `mem_sel_aes`. As saídas do multiplexador são encaminhadas à memória; o dado retornado (`mem_mux_rdata`) é disponibilizado a `aes_mem_rdata` e `mem_o_data`. 
 
-Já em [`minisoc_aes_top.sv`](../../rtl/minisoc_aes/minisoc_aes_top.sv), é definido o controle interno de acesso à memória. Os registradores `block_q` e `word_q` são utilizados para formar o endereço de acesso. O endereço de 10 bits é composto pela concatenação `{block_q[7:0], word_q}`, conforme a organização especificada no *Block Guide* [2].
+Já em [`minisoc_aes_top.sv`](../../rtl/minisoc_aes/minisoc_aes_top.sv), é definido o controle interno de acesso à memória. Os registradores `block_q` e `word_q` são utilizados para formar o endereço de acesso. O endereço de 10 bits é composto pela concatenação `{block_q[7:0], word_q}`.
 
 ```text
  9                        2 1            0
@@ -205,10 +205,35 @@ Com exceção da rodada 10, na qual MixColumns não é aplicada, os testes conte
 
 ## 6. Lista de dúvidas
 
-1. Como transportar `START` do domínio *always-on* (`clk`) para `sys_clk` sem perder o pulso quando o PLL estiver desabilitado?
-2. Como garantir que os registradores de configuração permaneçam estáveis durante sua captura no domínio do AES?
-3. Como sincronizar os sinais de status do AES para leitura pelo SPI no domínio *always-on*?
-4. Como realizar a seleção entre `sys_clk` e `mem_clk` no multiplexador da memória sem gerar pulsos espúrios (*glitches*) durante a transferência de propriedade?
+1. 1. A lógica de CDC deve ficar em `minisoc_spi.sv` ou em `minisoc_aes_top.sv`? ?
+
+
+2. Considerando a existência de três domínios de clock:
+
+- **Domínio SPI (`spi_sclk`):** recepção dos comandos SPI.
+- **Domínio always-on (`clk`):** banco de registradores.
+- **Domínio AES (`clk_sys`):** processamento aes.
+
+Será necessário implementar duas lógicas de CDC independentes, conforme exemplificado na Figura 5 ?
+
+```text
+Domínio SPI         Domínio always-on        Domínio AES
+(spi_sclk)               (clk)               (clk_sys)
+     │                     │                     │
+     ▼                     ▼                     ▼
+┌───────────┐       ┌──────────────┐       ┌────────────┐
+│ Recepção  │       │  Banco de    │       │            │
+│   SPI     │       │ registradores│       │ Núcleo AES │
+└─────┬─────┘       └──────┬───────┘       └──────▲─────┘
+      │                    │                      │
+      ▼                    ▼                      │
+    CDC 1                CDC 2 ──────────────────┘
+      │                    ▲
+      └────────────────────┘
+```
+
+*Figura 5 — Representação conceitual proposta das duas fronteiras de CDC entre os domínios de clock do MiniSoC AES.*
+
 
 ## Referências
 
