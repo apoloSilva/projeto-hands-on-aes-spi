@@ -157,8 +157,6 @@ O módulo [`minisoc_aes_mix_columns.sv`](../../rtl/minisoc_aes/minisoc_aes_mix_c
 
 Para cada coluna \(c\), MixColumns é definido pela Equação (5.7):
 
-$Para cada coluna c, MixColumns é definido pela Equação (5.7):
-
 <p align="center">
   <img src="images/eq_5_7.png" alt="Equação do MixColumns" width="420">
 </p>
@@ -185,7 +183,7 @@ Com exceção da rodada 10, na qual MixColumns não é aplicada, os testes conte
 
 ## 6. Lista de dúvidas
 
-1. 1. A lógica de CDC deve ficar em `minisoc_spi.sv` ou em `minisoc_aes_top.sv`? ?
+1. A lógica de CDC deve ficar em `minisoc_spi.sv` ou em `minisoc_aes_top.sv`? ?
 
 
 2. Considerando a existência de três domínios de clock:
