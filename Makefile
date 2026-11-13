@@ -11,7 +11,7 @@ FORMAL_DIR := fm
 # ==========================================
 RTL_FILES := \
     $(RTL_DIR)/minisoc_pkg.sv \
-    $(RTL_DIR)/minisoc_mem/minisoc_memory.sv $(RTL_DIR)/minisoc_pll/minisoc_pll_mock.sv \
+    $(RTL_DIR)/minisoc_mem/minisoc_memory.sv $(RTL_DIR)/minisoc_pll/clock_divider.sv $(RTL_DIR)/minisoc_pll/minisoc_pll_mock.sv \
     $(RTL_DIR)/minisoc_spi/minisoc_spi.sv \
     $(RTL_DIR)/minisoc_aes/minisoc_aes_sbox.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_sub_bytes.sv \
     $(RTL_DIR)/minisoc_aes/minisoc_aes_shift_rows.sv $(RTL_DIR)/minisoc_aes/minisoc_aes_key_exp.sv \
@@ -34,7 +34,7 @@ TIMESCALE ?= 1ns/1ps
 # ==========================================
 # Flags das ferramentas comerciais
 # ==========================================
-VLOGAN_FLAGS = -full64 -sverilog -kdb +lint=all
+VLOGAN_FLAGS = -full64 -sverilog -kdb +lint=all +define+FSDB
 VCS_FLAGS = -full64 -timescale=$(TIMESCALE) -debug_access+all -kdb
 
 # ==========================================

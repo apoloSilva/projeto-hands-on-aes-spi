@@ -24,6 +24,7 @@ package minisoc_pkg;
         ST_DONE          = 4'd9,
         ST_ERROR         = 4'd10
     } state_t;
+    
 
     parameter int unsigned RESET_RELEASE_CYCLES = 2;
 

@@ -46,7 +46,7 @@ A Figura 1 apresenta a máquina de estados do tipo Moore proposta para controlar
 
 ![Diagrama de estados da FSM de cifragem AES-128](images/fsm_aes.png)
 
-*Figura 1 — Diagrama de estados da FSM para cifragem AES-128.*
+*Figura 1 — Diagrama de estados da FSM para cifragem AES-128. Rev 1.*
 
 A tabela a seguir resume a função dos estados e das sequências de estados.
 

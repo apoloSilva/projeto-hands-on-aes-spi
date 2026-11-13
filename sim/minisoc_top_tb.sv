@@ -1,119 +1,126 @@
+
+
+
 module minisoc_top_tb;
+    import minisoc_pkg::*;
 
-    import semana02_test_vectors_pkg::*;
 
-    logic sel_mode;
-    logic use_mix;
-    logic [127:0] state_in, sub_in, sub_out;
-    logic [127:0] shift_in, shift_out, mix_in, mix_out;
-    logic [127:0] add_in, add_key, add_out;
+    // FIPS 197-upd1, Apêndice B: chave, entrada e saída final do AES-128.
+    localparam logic [127:0] AES_KEY    = 128'h2B7E151628AED2A6ABF7158809CF4F3C;
+    localparam logic [127:0] PLAINTEXT  = 128'h3243F6A8885A308D313198A2E0370734;
+    localparam logic [127:0] CIPHERTEXT = 128'h3925841D02DC09FBDC118597196A0B32;
 
-    // Instanciação dos DUTs
-    minisoc_aes_sub_bytes u_sub_bytes(.sel_mode(sel_mode),.state_in(sub_in),.state_out (sub_out));
 
-    minisoc_aes_shift_rows u_shift_rows(.sel_mode(sel_mode),.state_in(shift_in),.state_out(shift_out));
+    logic clk_ref = 1'b0;
+    logic clk_sys, o_locked;
+    logic rst_n, rst_aes_n;
+    logic [31:0] aes_control, aes_status;
+    logic [127:0] input_block, output_block;
 
-    minisoc_aes_mix_columns u_mix_columns( .sel_mode(sel_mode), .state_in(mix_in), .state_out(mix_out));
 
-    minisoc_aes_add_round_key u_add_round_key(.state_in(add_in), .round_key(add_key), .state_out(add_out));
+    // Referência de 2 GHz (período de 500 ps).
+    always #250ps clk_ref = ~clk_ref;
 
-    // Seleciona o encadeamento das transformações
-    // Cifragem: SubBytes -> ShiftRows -> MixColumns
-    // Teste inverso: InvMixColumns -> InvShiftRows -> InvSubBytes
-    assign sub_in   = sel_mode ? shift_out : state_in;
-    assign shift_in = sel_mode ? (use_mix ? mix_out : state_in) : sub_out; // trata a rodada 10, que não executa MixColumns.
-    assign mix_in   = sel_mode ? state_in : shift_out;
+
+    minisoc_pll_mock u_minisoc_pll_mock (
+        .rst_n       (rst_n),
+        .clk_in      (clk_ref),
+        .pll_div_sel (2'b11), // /8: 250 MHz para o AES.
+        .clk_out     (clk_sys),
+        .o_locked    (o_locked)
+    );
+
+
+    // DUT: FSM, expansão de chave e datapath do topo AES.
+    minisoc_aes_top u_minisoc_aes_top (
+        .o_locked    (o_locked),
+        .clk         (clk_sys),
+        .rst_n       (rst_aes_n),
+        .cfg_key     (AES_KEY),
+        .cfg_iv      (128'b0),
+        .cfg_counter (64'b0),
+        .num_blocks  (32'd1),
+        .aes_control (aes_control),
+        .aes_status  (aes_status),
+        .mem_we      (),
+        .mem_addr    (),
+        .mem_wdata   (),
+        .mem_rdata   ('0),
+        .state_in    (input_block),
+        .state_out   (output_block)
+    );
+
 
     // Execução dos testes.
     initial begin
-    //    $fsdbDumpfile("waves.fsdb");
-    //    $fsdbDumpvars(0, minisoc_aes_tb);
+`ifdef FSDB
+        $fsdbDumpfile("waves.fsdb");
+        $fsdbDumpvars(0, minisoc_top_tb);
+`endif
+        rst_n       = 1'b0;
+        rst_aes_n   = 1'b0;
+        aes_control = '0;
+        input_block = '0;
+        repeat (2) @(negedge clk_ref);
+        rst_n = 1'b1;
+        repeat (RESET_RELEASE_CYCLES) @(negedge clk_sys);
+        rst_aes_n = 1'b1;
 
-        $display("\nTESTANDO: ADDROUNDKEY()");
-        add_in  = after_mix_columns_of_round_1;
-        add_key = 128'hA0FAFE1788542CB123A339392A6C7605;
-        #1;
 
-        if (add_out !== state_start_of_round_2)
-            $fatal(1, "FAIL AddRoundKey Round 1");
+        $display("\nTESTANDO: CIPHER()");
+        check_cypher(PLAINTEXT, CIPHERTEXT);
 
-        $display("PASS AddRoundKey Round 1");
 
-        $display("\nTESTANDO: SUBBYTES(), SHIFTROWS() e MIXCOLUMNS()");
-        check_cypher_round(1, state_start_of_round_1, after_subbytes_of_round_1, after_shiftrows_of_round_1, after_mix_columns_of_round_1);
-        check_cypher_round(2, state_start_of_round_2, after_subbytes_of_round_2, after_shiftrows_of_round_2, after_mix_columns_of_round_2);
-        check_cypher_round(3, state_start_of_round_3, after_subbytes_of_round_3, after_shiftrows_of_round_3, after_mix_columns_of_round_3);
-        check_cypher_round(4, state_start_of_round_4, after_subbytes_of_round_4, after_shiftrows_of_round_4, after_mix_columns_of_round_4);
-        check_cypher_round(5, state_start_of_round_5, after_subbytes_of_round_5, after_shiftrows_of_round_5, after_mix_columns_of_round_5);
-        check_cypher_round(6, state_start_of_round_6, after_subbytes_of_round_6, after_shiftrows_of_round_6, after_mix_columns_of_round_6);
-        check_cypher_round(7, state_start_of_round_7, after_subbytes_of_round_7, after_shiftrows_of_round_7, after_mix_columns_of_round_7);
-        check_cypher_round(8, state_start_of_round_8, after_subbytes_of_round_8, after_shiftrows_of_round_8, after_mix_columns_of_round_8);
-        check_cypher_round(9, state_start_of_round_9, after_subbytes_of_round_9, after_shiftrows_of_round_9, after_mix_columns_of_round_9);
-        check_cypher_round(10, state_start_of_round_10, after_subbytes_of_round_10, after_shiftrows_of_round_10, after_shiftrows_of_round_10);
+        $display("\nTESTANDO: INVCIPHER()");
+        check_inv_cypher(CIPHERTEXT, PLAINTEXT);
 
-        $display("\nTESTANDO: INVMIXCOLUMNS(), INVSHIFTROWS() e INVSUBBYTES()");
-        check_inv_cypher_round(1, state_start_of_round_1, after_subbytes_of_round_1, after_shiftrows_of_round_1, after_mix_columns_of_round_1);
-        check_inv_cypher_round(2, state_start_of_round_2, after_subbytes_of_round_2, after_shiftrows_of_round_2, after_mix_columns_of_round_2);
-        check_inv_cypher_round(3, state_start_of_round_3, after_subbytes_of_round_3, after_shiftrows_of_round_3, after_mix_columns_of_round_3);
-        check_inv_cypher_round(4, state_start_of_round_4, after_subbytes_of_round_4, after_shiftrows_of_round_4, after_mix_columns_of_round_4);
-        check_inv_cypher_round(5, state_start_of_round_5, after_subbytes_of_round_5, after_shiftrows_of_round_5, after_mix_columns_of_round_5);
-        check_inv_cypher_round(6, state_start_of_round_6, after_subbytes_of_round_6, after_shiftrows_of_round_6, after_mix_columns_of_round_6);
-        check_inv_cypher_round(7, state_start_of_round_7, after_subbytes_of_round_7, after_shiftrows_of_round_7, after_mix_columns_of_round_7);
-        check_inv_cypher_round(8, state_start_of_round_8, after_subbytes_of_round_8, after_shiftrows_of_round_8, after_mix_columns_of_round_8);
-        check_inv_cypher_round(9, state_start_of_round_9, after_subbytes_of_round_9, after_shiftrows_of_round_9, after_mix_columns_of_round_9);
-        check_inv_cypher_round(10, state_start_of_round_10, after_subbytes_of_round_10, after_shiftrows_of_round_10, after_shiftrows_of_round_10);
 
-        $display("\n");
         $finish;
     end
 
+
     // Rotinas de verificação.
-    task automatic check_cypher_round (
-        input int round_num,
-        input logic [127:0] state_start,
-        input logic [127:0] expected_sub,
-        input logic [127:0] expected_shift,
-        input logic [127:0] expected_mix
+    task automatic check_cypher (
+        input logic [127:0] block_in,
+        input logic [127:0] expected
     );
-        sel_mode = 1'b0;
-        use_mix  = (round_num != 10);
-        state_in = state_start;
-        #1;
+        @(negedge clk_sys);
+        input_block = block_in;
+        aes_control = 32'h0000_0001; // ECB, cifragem e START.
+        @(negedge clk_sys);
+        aes_control[0] = 1'b0;
+        @(posedge aes_status[1]);
 
-        if (sub_out !== expected_sub)
-            $fatal(1, "FAIL SubBytes Round %0d", round_num);
 
-        if (shift_out !== expected_shift)
-            $fatal(1, "FAIL ShiftRows Round %0d", round_num);
+        if (output_block !== expected)
+            $fatal(1, "FAIL CIPHER: esperado=%032h obtido=%032h", expected, output_block);
 
-        if (use_mix && mix_out !== expected_mix)
-            $fatal(1, "FAIL MixColumns Round %0d", round_num);
 
-        $display("PASS CIPHER Round %0d", round_num);
+        $display("PASS CIPHER");
     endtask
 
-    task automatic check_inv_cypher_round (
-        input int round_num,
-        input logic [127:0] state_start,
-        input logic [127:0] expected_sub,
-        input logic [127:0] expected_shift,
-        input logic [127:0] expected_mix
+
+    task automatic check_inv_cypher (
+        input logic [127:0] block_in,
+        input logic [127:0] expected
     );
-        sel_mode = 1'b1;
-        use_mix  = (round_num != 10);
-        state_in = expected_mix;
-        #1;
+        @(negedge clk_sys);
+        input_block = block_in;
+        aes_control = 32'h0000_0003; // ECB, decifragem e START.
+        @(negedge clk_sys);
+        aes_control[0] = 1'b0;
+        @(posedge aes_status[1]);
 
-        if (use_mix && mix_out !== expected_shift)
-            $fatal(1, "FAIL InvMixColumns Round %0d", round_num);
 
-        if (shift_out !== expected_sub)
-            $fatal(1, "FAIL InvShiftRows Round %0d", round_num);
+        if (output_block !== expected)
+            $fatal(1, "FAIL INVCIPHER: esperado=%032h obtido=%032h", expected, output_block);
 
-        if (sub_out !== state_start)
-            $fatal(1, "FAIL InvSubBytes Round %0d", round_num);
 
-        $display("PASS INVCIPHER Round %0d", round_num);
+        $display("PASS INVCIPHER");
     endtask
-
 endmodule
+
+
+
+
+

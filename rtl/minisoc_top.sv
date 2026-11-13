@@ -51,7 +51,7 @@ module minisoc_top
         if (!rst_release_n)
             rst_sync <= '0;
         else
-            rst_sync <= (rst_sync << 1) | 1'b1; // insere e desloca 1 a esquera a cada ciclo de sys_clk
+            rst_sync <= (rst_sync << 1) | 1'b1; // insere e desloca 1 a equerda de cada ciclo de sys_clk
     end
 
     assign rst_sys_n = rst_sync[RESET_RELEASE_CYCLES-1]; // 
