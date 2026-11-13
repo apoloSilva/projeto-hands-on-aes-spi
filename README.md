@@ -14,7 +14,7 @@ A arquitetura, a nomenclatura, as interfaces e o mapa de registradores seguem o
 O planejamento e estado das tarefas está no [backlog](docs/backlog.md).
 
 
-## Organização (semana 3)
+## Organização (semana 4)
 
 
 | Pasta | Conteúdo |
@@ -26,9 +26,10 @@ O planejamento e estado das tarefas está no [backlog](docs/backlog.md).
 | `fm/` | Verificação formal, reservada. |
 | `upf/` | Intenção de potência, reservada. |
 | `libs/` | Bibliotecas, reservada. |
+| `build/sim/` | Arquivos gerados pela compilação e pela simulação, incluindo `simv` e `waves.fsdb`. |
 
 
-## Executar testes das transformações (semana 3)
+## Executar testes das transformações (semana 4)
 
 
 ```bash
@@ -47,6 +48,7 @@ make clean    # Limpeza dos arquivos gerados
 - [Relatório da semana 1](docs/reports/semana_01.md)
 - [Relatório da semana 2](docs/reports/semana_02.md)
 - [Relatório da semana 3](docs/reports/semana_03.md)
+- [Relatório da semana 4](docs/reports/semana_04.md)
 - [Microarquitetura v1.0](docs/architecture/microarquitetura_v1.0.md)
 
 

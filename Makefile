@@ -5,6 +5,7 @@ RTL_DIR    := rtl
 TB_DIR     := sim
 SYNTH_DIR  := synth
 FORMAL_DIR := fm
+SIM_OUT := build/sim
 
 # ==========================================
 # Arquivos
@@ -19,6 +20,9 @@ RTL_FILES := \
     $(RTL_DIR)/minisoc_aes/minisoc_aes_top.sv $(RTL_DIR)/minisoc_top.sv
 
 TB_FILES := $(TB_DIR)/semana02_test_vectors_pkg.sv $(TB_DIR)/minisoc_top_tb.sv
+
+$(SIM_OUT):
+	mkdir -p "$@"
 
 # ==========================================
 # Módulos de topo
@@ -40,26 +44,38 @@ VCS_FLAGS = -full64 -timescale=$(TIMESCALE) -debug_access+all -kdb
 # ==========================================
 # Verificação de sintaxe
 # ==========================================
-syntax:
-	vlogan $(VLOGAN_FLAGS) $(RTL_FILES) $(MODEL_FILES) $(TB_FILES)
+#syntax:
+#    vlogan $(VLOGAN_FLAGS) $(RTL_FILES) $(MODEL_FILES) $(TB_FILES)
+
+syntax: | $(SIM_OUT)
+	cd "$(SIM_OUT)" && vlogan $(VLOGAN_FLAGS) $(abspath $(RTL_FILES) $(MODEL_FILES) $(TB_FILES))
 
 # ==========================================
 # Compilação / Elaboração
 # ==========================================
+#compile: syntax
+#    vcs $(VCS_FLAGS) -top $(TB_TOP)
+
 compile: syntax
-	vcs $(VCS_FLAGS) -top $(TB_TOP)
+	cd "$(SIM_OUT)" && vcs $(VCS_FLAGS) -top $(TB_TOP)
 
 # ==========================================
 # Simulação
 # ==========================================
+#run: compile
+#    ./simv
+
 run: compile
-	./simv
+	cd "$(SIM_OUT)" && ./simv
 
 # ==========================================
 # Abrir waveform
 # ==========================================
+#wave:
+#    verdi -ssf $(WAVE_FILE) &
+
 wave:
-	verdi -ssf $(WAVE_FILE) &
+	cd "$(SIM_OUT)" && verdi -ssf "$(WAVE_FILE)"
 
 # ==========================================
 # Síntese (não implementado)
@@ -75,7 +91,7 @@ gen_fm:
 
 fm_run: clean_fm
 	fm_shell -f $(FORMAL_DIR)/formality.tcl | tee -i $(FORMAL_DIR)/reports/formality.log
-#	fm_shell -f $(FORMAL_DIR)/formality_auto.tcl | tee -i $(FORMAL_DIR)/reports/formality_auto.log
+#    fm_shell -f $(FORMAL_DIR)/formality_auto.tcl | tee -i $(FORMAL_DIR)/reports/formality_auto.log
 
 rungui:
 	fm_shell -gui
@@ -86,6 +102,7 @@ rungui:
 clean_sim:
 	rm -rf csrc simv* obj_dir *.daidir novas* AN.DB ucli.key verdi* DVEfiles .vlogan* *.fsdb \
 	    *.fst *.vcd *.log *.out *.fls *.gz *.fdb_latexmk *.aux
+	rm -rf -- "$(SIM_OUT)"
 
 # ==========================================
 # Limpeza da síntese
