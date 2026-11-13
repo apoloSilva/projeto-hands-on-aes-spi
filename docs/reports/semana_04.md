@@ -18,7 +18,7 @@ A FSM revisada aguarda a expansão de chave e controla a sequência de operaçõ
 
 ### 1.1. Expansão de chave — `minisoc_aes_key_exp`
 
-O módulo [`minisoc_aes_key_exp.sv`](../../rtl/minisoc_aes/minisoc_aes_key_exp.sv) segue o Algoritmo 2 da FIPS 197 [1]. As quatro primeiras palavras de 32 bits recebem a chave original. As 40 restantes são calculadas por XOR, com aplicação de `ROTWORD()`, `SUBWORD()` e `Rcon` a cada quatro palavras. A tabela de `Rcon` foi implementada com `case`.
+O módulo [`minisoc_aes_key_exp.sv`](../../rtl/minisoc_aes/minisoc_aes_key_exp.sv) segue o Algoritmo 2 da FIPS 197 [1]. As quatro primeiras palavras de 32 bits recebem a chave original. As 40 restantes são calculadas por XOR, com aplicação de `ROTWORD()`, `SUBWORD()` e `Rcon` a cada quatro palavras.s
 
 A expansão reutiliza quatro S-boxes de `minisoc_aes_sub_bytes` e calcula uma palavra por ciclo, totalizando 40 ciclos de cálculo. `start_exp` inicia a operação e `key_done` sinaliza sua conclusão. As mesmas 11 chaves são usadas nos dois sentidos, com `round_q` selecionando a chave disponível em `round_key`.
 
@@ -30,11 +30,11 @@ A cifragem aplica as chaves de `K0` a `K10`, e a decifragem, de `K10` a `K0`.
 
 ## 3. Testbench autoverificável
 
-O testbench `minisoc_top_tb.sv` instancia `minisoc_aes_top` e verifica a cifragem e a decifragem de um bloco em modo ECB. O resultado é montado a partir das quatro palavras nas portas de escrita do topo e comparado ao valor do Apêndice B da FIPS 197 [1]. O testbench fornece o bloco de entrada já montado e emula os sinais de controle de memória pendentes.
+O testbench `minisoc_top_tb.sv` instancia `minisoc_aes_top` e verifica a cifragem e a decifragem de um bloco em modo ECB (Electronic Codebook). O resultado é montado a partir das quatro palavras nas portas de escrita do topo e comparado ao valor do Apêndice B da FIPS 197 [1]. O testbench fornece o bloco de entrada já montado, sem a necessidade de emular os sinais de controle de memória pendentes (essa parte será implementada na semana 6, junto à interface de memória).
 
-O testbench também instancia `minisoc_pll_mock`, com referência de 2 GHz e divisor `/8`, gerando 250 MHz para o AES. Após a saída do reset, `o_locked` sobe na quarta borda de subida da referência. O reset do AES é liberado dois ciclos do clock de sistema depois [2].
+O testbench também instancia `minisoc_pll_mock`, com referência de 2 GHz e divisor `/8`, gerando 250 MHz para o AES.
 
-As simulações no Icarus Verilog e no Verilator retornaram `PASS CIPHER` e `PASS INVCIPHER`. Resultados divergentes ou ausência de `DONE` geram `FAIL`. A compilação no Verilator foi concluída com avisos.
+As simulações retornaram `PASS CIPHER` e `PASS INVCIPHER`.
 
 ![Inserir captura do terminal com PASS CIPHER e PASS INVCIPHER](images/testbench_rounds_sem4.png)
 
